@@ -20,6 +20,16 @@ pipeline {
             }
           }
         }
+        stage('Secrets scanner') {
+          steps {
+            container('trufflehog') {
+              sh 'git clone ${GIT_URL}'
+              sh 'cd sample-api-service && ls -al'
+              sh 'cd sample-api-service && trufflehog  --exclude_paths ./secrets-exclude.txt .'
+              sh 'rm -rf sample-api-service'
+            }
+          }
+        }
       }
     }
     stage('Build') {
